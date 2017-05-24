@@ -1,0 +1,8 @@
+<script>
+	$(function(){
+		var url = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v2/search?term=bars&location=San+Francisco"
+		$.getJSON(url,function(data){
+			console.log(data);
+		});
+	});
+</script>
