@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var exphbs = require('express-handlebars');
 var merge = require('merge');
-var yelp = require('node-yelp-api');
+var yelp = require('yelp-fusion');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
