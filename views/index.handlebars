@@ -1,21 +1,29 @@
-<form action="/search" method="post">
-	<div class="form-group">
-		<input type="text" name="location" class="form-control" id="search-form" placeholder="Where are you?">
-		<br>
-		<button class="btn btn-primary center-block btn-block" type="submit">Search</button>
-	</div>
-	<i class="glyphicon glyphicon-star"></i>
-	<i class="glyphicon glyphicon-star-empty"></i>
-	{{#each data}}
-		<div class="col-md-10 col-lg-10 col-lg-offset-1 col-md-offset-1 col-sm-10 col-xs-10 bars-box">
-				<div class="col-md-2 col-lg-2 col-sm-2 col-xs-2">
+<div class="container-fluid">
+	<form action="/search" method="post">
+		<div class="form-group">
+			<input type="text" name="location" class="form-control" id="search-form" placeholder="Where are you?">
+			<br>
+			<button class="btn btn-primary center-block btn-block" type="submit">Search</button>
+		</div>
+		<i class="glyphicon glyphicon-star"></i>
+		<i class="glyphicon glyphicon-star-empty"></i>
+	</form>
+
+	<div class="col-md-10 col-lg-10 col-lg-offset-1 col-md-offset-1 col-sm-10 col-xs-10">
+		{{#each data}}
+			<div class="col-md-5 col-lg-5 col-sm-10 col-xs-10 bars-details">
+				<h4 class="title text-center"><a href="{{this.url}}">{{this.name}}</a></h4>
+				<div class="col-md-8 col-lg-8 col-sm-6 col-xs-6">
 					<img src="{{this.image_url}}" alt={{this.name}} class="display-image">
 				</div>
-				<div class="col-md-9 col-lg-9 col-sm-9 col-xs-9">
-					<h4 class="title"><a href="{{this.url}}">{{this.name}}</a></h4>
-					<small>Rating : {{this.rating}}</small>
-					<button></button>
+				<div class="col-md-4 col-lg-4 col-sm-6 col-xs-6">
+					<span>Rating : </span>
+					<h3>{{this.rating}}</h3>
 				</div>
-		</div>
-	{{/each}}
-</form>
+				<div class="going col-md-10 col-lg-10 col-sm-10 col-xs-10 col-md-offset-1 col-lg-offset-1 col-sm-offset-1 col-xs-offset-1">
+					<span>0 Going</span>
+				</div>
+			</div>
+		{{/each}}
+	</div>
+</div>

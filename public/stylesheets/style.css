@@ -12,15 +12,6 @@ a {
 .display-image{
 	width: 100px;
   height: 90px;
-  overflow: hidden;
-  border: 2px solid #33CC99;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-}
-
-.bars-box{
-	margin-bottom: 10px;
-	color: #fff;
 }
 
 .title a{
@@ -34,6 +25,16 @@ a {
   color: #fff;
   border: solid #33CC99 2px;
   border-radius: 30px;
+}
+
+.bars-details{
+  background-color: orange;
+  margin: 20px;
+}
+
+.going{
+  height: 30px;
+  text-align: center;
 }
 
 
