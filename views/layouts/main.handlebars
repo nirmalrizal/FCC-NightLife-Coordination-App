@@ -8,6 +8,19 @@
 </head>
 <body>
 	<div class="container-fluid">
+		<nav class="navbar">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="/">FCC NightLife Coordination App</a>
+		    </div>
+		    {{#if user.fullname}}
+			    <ul class="nav navbar-nav navbar-right">
+			      	<li><a href="#"><span class="glyphicon glyphicon-user"></span> {{user.fullname}}</a></li>
+	      			<li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+			    </ul>
+		    {{/if}}
+		  </div>
+		</nav>
 		{{{body}}}
 	</div>
 

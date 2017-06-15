@@ -8,6 +8,9 @@ var exphbs = require('express-handlebars');
 var merge = require('merge');
 var yelp = require('yelp-fusion');
 var session = require('express-session');
+var mongoose = require("mongoose");
+
+var myDB = "mongodb://nirmal:nirmal54321@ds123312.mlab.com:23312/nightlife";
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -23,6 +26,8 @@ app.use(session({
 // view engine setup
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
+
+mongoose.connect(myDB);
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));

@@ -1,7 +1,15 @@
 body {
-  padding: 50px;
+  padding: 15px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   background-color: #2E3333;
+}
+
+#login-page{
+  color: #fff;
+}
+
+#login-page a{
+  text-decoration: none;
 }
 
 a {
@@ -37,4 +45,7 @@ a {
   text-align: center;
 }
 
+.navbar-nav>li>a:hover{
+  background-color: #2E3333;
+}
 
