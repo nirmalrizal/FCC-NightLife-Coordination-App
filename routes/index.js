@@ -17,7 +17,6 @@ router.get('/', function(req, res, next) {
 			console.log(err)
 		} else {
 			var place = places;
-			console.log(place);
 			if(sess.user){
 				res.render('index', { data, user, place });
 			} else {
@@ -83,7 +82,6 @@ router.post('/search',function(req, res){
 
 			client.search(searchRequest).then(function(data2){
 			    sess.data = data2.jsonBody.businesses;
-			    console.log(JSON.stringify(data2.jsonBody.businesses[0], null, 4));
 			    res.redirect('/');
 			});
 		})
@@ -94,28 +92,109 @@ router.post('/search',function(req, res){
 
 router.post('/going',function(req,res){
 	var id = req.body.id;
-	Place.findOne( { place: id }, function(err,place){
-		 if(err){
-		 	console.log(err);
-		 } else if(place){
-			var newCount = place.count + 1;
-			Place.findOneAndUpdate({ place: id }, {$set: { count: newCount }},function(err,updatedPlace){
-				console.log(updatedPlace);
-				res.redirect('/');
+	var sess = req.session;
+	var email = sess.user.email;
+	console.log("Email : " + email);
+	User.findOne({ email: email },function(err,userDetail){
+		var insPlace = [];
+		console.log("interestedPlace = " + userDetail);
+		insPlace = userDetail.interestedPlace;
+		if(insPlace.length === 0){ //if user have not set going on any bar
+			Place.findOne( { place: id }, function(err,place){
+				 if(err){
+				 	console.log(err);
+				 } else if(place){
+					var newCount = place.count + 1;
+					Place.findOneAndUpdate({ place: id }, {$set: { count: newCount }},function(err,updatedPlace){
+						User.findOneAndUpdate({ email: email }, { $push: { interestedPlace: id }},function(err,pushData){
+							if(err){
+								console.log(err)
+							} else {
+								res.redirect('/');
+							}
+						});
+					});
+				 } else { 
+				 	var newPlace = new Place();
+				 	newPlace.place = id;
+				 	newPlace.count = 1;
+				 	newPlace.save(function(err,result){
+				 		if(err){
+				 			console.log(err);
+				 		} else {
+				 			User.findOneAndUpdate({ email: email }, { $push: { interestedPlace: id }},function(err,pushData){
+								if(err){
+									console.log(err)
+								} else {
+									res.redirect('/');
+								}
+							});
+				 		}
+				 	});
+				 }
 			});
-		 } else {
-		 	var newPlace = new Place();
-		 	newPlace.place = id;
-		 	newPlace.count = 1;
-		 	newPlace.save(function(err,result){
-		 		if(err){
-		 			console.log(err);
-		 		} else {
-		 			console.log(result);
-		 			res.redirect('/');
-		 		}
-		 	})
-		 }
+		} else { //to check if the user have clicked before going on that bar
+			var count = 0;
+			var minus = false;
+			for(var i=0;i<insPlace.length;i++){
+				if(insPlace[i] == id){
+					Place.findOne( { place: id }, function(err,place){
+						var newCount = place.count - 1;
+						Place.findOneAndUpdate({ place: id }, {$set: { count: newCount }},function(err,updatedPlace){
+							User.findOneAndUpdate({ email: email }, { $pull: { interestedPlace: id }},function(err,plledData){
+								if(err){
+									console.log(err)
+								} else {
+									minus = true;
+								}
+							});
+						});
+					});
+				}
+				if(minus){
+					break;
+				}
+				count++;
+			}
+
+			if(count != insPlace.length){
+				res.redirect('/');
+			} else {
+				Place.findOne( { place: id }, function(err,place){
+						 if(err){
+						 	console.log(err);
+						 } else if(place){
+							var newCount = place.count + 1;
+							Place.findOneAndUpdate({ place: id }, {$set: { count: newCount }},function(err,updatedPlace){
+								User.findOneAndUpdate({ email: email }, { $push: { interestedPlace: id }},function(err,pushData){
+									if(err){
+										console.log(err)
+									} else {
+										res.redirect('/');
+									}
+								});
+							});
+						 } else {
+						 	var newPlace = new Place();
+						 	newPlace.place = id;
+						 	newPlace.count = 1;
+						 	newPlace.save(function(err,result){
+						 		if(err){
+						 			console.log(err);
+						 		} else {
+						 			User.findOneAndUpdate({ email: email }, { $push: { interestedPlace: id }},function(err,pushData){
+									if(err){
+										console.log(err)
+									} else {
+										res.redirect('/');
+									}
+								});
+						 		}
+						 	});
+						 }
+					});
+			}
+		}
 	});
 });
 
