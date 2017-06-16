@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var yelp = require('yelp-fusion');
 var User = require('../models/user.js');
+var Place = require('../models/places.js');
 
 var clientId = '5vg4arEfVEd-6ZHKgZa1oQ';
 var clientSecret = 'UNj216lADVN32XhsPkArizKZfvzhDtaaYSNLonHDJcFLMxXCICTKRKHSMYED5Nje';
@@ -11,12 +12,19 @@ router.get('/', function(req, res, next) {
 	var sess = req.session;
 	var data = sess.data;
 	var user = sess.user;
-	//console.log("Data := " + data);
-	if(sess.user){
-		res.render('index', { data, user });
-	} else {
-		res.render('login');
-	}
+	Place.find({},function(err,places){
+		if(err){
+			console.log(err)
+		} else {
+			var place = places;
+			console.log(place);
+			if(sess.user){
+				res.render('index', { data, user, place });
+			} else {
+				res.render('login');
+			}
+		}
+	});
 });
 
 router.post('/login',function(req,res){
@@ -82,6 +90,33 @@ router.post('/search',function(req, res){
 		.catch(function(err){
 			  console.log(err);
 		});
+});
+
+router.post('/going',function(req,res){
+	var id = req.body.id;
+	Place.findOne( { place: id }, function(err,place){
+		 if(err){
+		 	console.log(err);
+		 } else if(place){
+			var newCount = place.count + 1;
+			Place.findOneAndUpdate({ place: id }, {$set: { count: newCount }},function(err,updatedPlace){
+				console.log(updatedPlace);
+				res.redirect('/');
+			});
+		 } else {
+		 	var newPlace = new Place();
+		 	newPlace.place = id;
+		 	newPlace.count = 1;
+		 	newPlace.save(function(err,result){
+		 		if(err){
+		 			console.log(err);
+		 		} else {
+		 			console.log(result);
+		 			res.redirect('/');
+		 		}
+		 	})
+		 }
+	});
 });
 
 module.exports = router;

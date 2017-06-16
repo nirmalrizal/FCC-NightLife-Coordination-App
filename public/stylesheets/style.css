@@ -23,8 +23,8 @@ a {
 }
 
 .title a{
-	color: #33CC99;
 	text-decoration: none;
+  color: #2E3333;
 }
 
 #search-form{
@@ -36,16 +36,29 @@ a {
 }
 
 .bars-details{
-  background-color: orange;
+  background-color: #909694;
   margin: 20px;
 }
 
 .going{
   height: 30px;
+  width: 100%;
   text-align: center;
+  background-color: orange;
+  cursor: pointer;
+  border: none;
+}
+
+.going:hover{
+  background-color: #CBA157;
 }
 
 .navbar-nav>li>a:hover{
   background-color: #2E3333;
+}
+
+#btn-part{
+  padding-left: 0px;
+  padding-right: 0px;
 }
 
