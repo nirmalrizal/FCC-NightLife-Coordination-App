@@ -93,11 +93,9 @@ router.post('/search',function(req, res){
 router.post('/going',function(req,res){
 	var id = req.body.id;
 	var sess = req.session;
-	var email = sess.user.email;
-	console.log("Email : " + email);
-	User.findOne({ email: email },function(err,userDetail){
+	var user = sess.user;
+	User.findOne({ email: user.email },function(err,userDetail){
 		var insPlace = [];
-		console.log("interestedPlace = " + userDetail);
 		insPlace = userDetail.interestedPlace;
 		if(insPlace.length === 0){ //if user have not set going on any bar
 			Place.findOne( { place: id }, function(err,place){
@@ -106,7 +104,7 @@ router.post('/going',function(req,res){
 				 } else if(place){
 					var newCount = place.count + 1;
 					Place.findOneAndUpdate({ place: id }, {$set: { count: newCount }},function(err,updatedPlace){
-						User.findOneAndUpdate({ email: email }, { $push: { interestedPlace: id }},function(err,pushData){
+						User.findOneAndUpdate({ email: userDetail.email }, { $push: { interestedPlace: id }},function(err,pushData){
 							if(err){
 								console.log(err)
 							} else {
@@ -122,7 +120,7 @@ router.post('/going',function(req,res){
 				 		if(err){
 				 			console.log(err);
 				 		} else {
-				 			User.findOneAndUpdate({ email: email }, { $push: { interestedPlace: id }},function(err,pushData){
+				 			User.findOneAndUpdate({ email: userDetail.email }, { $push: { interestedPlace: id }},function(err,pushData){
 								if(err){
 									console.log(err)
 								} else {
@@ -133,66 +131,59 @@ router.post('/going',function(req,res){
 				 	});
 				 }
 			});
-		} else { //to check if the user have clicked before going on that bar
-			var count = 0;
-			var minus = false;
-			for(var i=0;i<insPlace.length;i++){
-				if(insPlace[i] == id){
-					Place.findOne( { place: id }, function(err,place){
-						var newCount = place.count - 1;
-						Place.findOneAndUpdate({ place: id }, {$set: { count: newCount }},function(err,updatedPlace){
-							User.findOneAndUpdate({ email: email }, { $pull: { interestedPlace: id }},function(err,plledData){
+		} else {
+			var temp = 0;
+			insPlace.map(function(place){
+				if(place == id){
+					Place.findOne({ place },function(err,placeData){
+						var newCount = placeData.count - 1;
+						Place.findOneAndUpdate({ place },{ $set: {count: newCount}},function(err,data1){
+							User.findOneAndUpdate({ email: userDetail.email },{ $pull: { interestedPlace: id }},function(err){
 								if(err){
-									console.log(err)
-								} else {
-									minus = true;
+									console.log(err);
 								}
+								res.redirect('/');
 							});
 						});
 					});
+				} else {
+					temp++;
 				}
-				if(minus){
-					break;
-				}
-				count++;
-			}
-
-			if(count != insPlace.length){
-				res.redirect('/');
-			} else {
+			});
+			if(temp == insPlace.length){
 				Place.findOne( { place: id }, function(err,place){
-						 if(err){
-						 	console.log(err);
-						 } else if(place){
-							var newCount = place.count + 1;
-							Place.findOneAndUpdate({ place: id }, {$set: { count: newCount }},function(err,updatedPlace){
-								User.findOneAndUpdate({ email: email }, { $push: { interestedPlace: id }},function(err,pushData){
-									if(err){
-										console.log(err)
-									} else {
-										res.redirect('/');
-									}
-								});
+					 if(err){
+					 	console.log(err);
+					 } else if(place){
+						var newCount = place.count + 1;
+						Place.findOneAndUpdate({ place: id }, {$set: { count: newCount }},function(err,updatedPlace){
+							User.findOneAndUpdate({ email: userDetail.email }, { $push: { interestedPlace: id }},function(err,pushData){
+								if(err){
+									console.log(err)
+								} else {
+									res.redirect('/');
+								}
 							});
-						 } else {
-						 	var newPlace = new Place();
-						 	newPlace.place = id;
-						 	newPlace.count = 1;
-						 	newPlace.save(function(err,result){
-						 		if(err){
-						 			console.log(err);
-						 		} else {
-						 			User.findOneAndUpdate({ email: email }, { $push: { interestedPlace: id }},function(err,pushData){
+						});
+					 } else { 
+					 	var newPlace = new Place();
+					 	newPlace.place = id;
+					 	newPlace.count = 1;
+					 	newPlace.save(function(err,result){
+					 		if(err){
+					 			console.log(err);
+					 		} else {
+					 			User.findOneAndUpdate({ email: userDetail.email }, { $push: { interestedPlace: id }},function(err,pushData){
 									if(err){
 										console.log(err)
 									} else {
 										res.redirect('/');
 									}
 								});
-						 		}
-						 	});
-						 }
-					});
+					 		}
+					 	});
+					 }
+				});
 			}
 		}
 	});
