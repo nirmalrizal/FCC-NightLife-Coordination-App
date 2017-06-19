@@ -13,7 +13,6 @@ var mongoose = require("mongoose");
 var myDB = "mongodb://nirmal:nirmal54321@ds123312.mlab.com:23312/nightlife";
 
 var index = require('./routes/index');
-var users = require('./routes/users');
 
 var app = express();
 
@@ -39,7 +38,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/css',express.static(path.join(__dirname, 'public/stylesheets')));
 
 app.use('/', index);
-app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
