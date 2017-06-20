@@ -9,6 +9,7 @@ var merge = require('merge');
 var yelp = require('yelp-fusion');
 var session = require('express-session');
 var mongoose = require("mongoose");
+var flash = require('connect-flash');
 
 var myDB = "mongodb://nirmal:nirmal54321@ds123312.mlab.com:23312/nightlife";
 
@@ -21,6 +22,9 @@ app.use(session({
   resave: true,
   saveUninitialized: true
 }));
+
+//connect-flash middleware
+app.use(flash());
 
 // view engine setup
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));

@@ -12,6 +12,7 @@ router.get('/', function(req, res, next) {
 	var sess = req.session;
 	var data = sess.data;
 	var user = sess.user;
+	var loginMessage = req.flash('login');
 	Place.find({},function(err,places){
 		if(err){
 			console.log(err)
@@ -20,7 +21,7 @@ router.get('/', function(req, res, next) {
 			if(sess.user){
 				res.render('index', { data, user, place });
 			} else {
-				res.render('login');
+				res.render('login',{ loginMessage });
 			}
 		}
 	});
@@ -44,7 +45,8 @@ router.post('/login',function(req,res){
 });
 
 router.get('/signup',function(req,res){
-	res.render('signup');
+	var mustLogin = "You must login to continue";
+	res.render('signup',{ mustLogin });
 });
 
 router.post('/signup',function(req,res){
@@ -62,6 +64,7 @@ router.post('/signup',function(req,res){
 		if(err){
 			console.log("DB insertion error");
 		} else {
+			req.flash('login','You can login now');
 			res.redirect('/');
 		}
 	});
@@ -187,6 +190,12 @@ router.post('/going',function(req,res){
 			}
 		}
 	});
+});
+
+router.get('/logout',function(req,res){
+	var sess = req.session;
+	sess.user = null;
+	res.redirect('/');
 });
 
 module.exports = router;

@@ -1,7 +1,8 @@
 body {
   padding: 15px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  background-color: #2E3333;
+  background-color: #34495e;
+  color: #fff;
 }
 
 #login-page{
@@ -17,6 +18,10 @@ a {
   text-decoration: none;
 }
 
+a:hover{
+  color: #000;
+}
+
 .display-image{
 	width: 100px;
   height: 90px;
@@ -28,15 +33,15 @@ a {
 }
 
 #search-form{
-  background-color: #2E3333;
+  background-color: #34495e;
   text-align: center;
   color: #fff;
-  border: solid #33CC99 2px;
+  border: solid #212f3c 2px;
   border-radius: 30px;
 }
 
 .bars-details{
-  background-color: #909694;
+  background-color: #5d6d7e ;
   margin: 20px;
 }
 
@@ -54,11 +59,18 @@ a {
 }
 
 .navbar-nav>li>a:hover{
-  background-color: #2E3333;
+  background-color: #34495e;
+}
+
+.navbar-nav>li>a{
+  color: #fff;
+}
+
+.navbar-header a{
+  color: #fff;
 }
 
 #btn-part{
   padding-left: 0px;
   padding-right: 0px;
 }
-
