@@ -10,8 +10,10 @@ var yelp = require('yelp-fusion');
 var session = require('express-session');
 var mongoose = require("mongoose");
 var flash = require('connect-flash');
+var dotenv = require('dotenv');
+dotenv.load();
 
-var myDB = "mongodb://nirmal:nirmal54321@ds123312.mlab.com:23312/nightlife";
+var myDB = process.env.DB_URI;
 
 var index = require('./routes/index');
 

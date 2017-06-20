@@ -5,9 +5,9 @@
 </head>
 <body>
 	<div class="container" id="login-page">
-		{{#if mustLogin}}
+		{{#if emailMessage}}
 			<div class="alert alert-danger">
-			  <strong>Sorry!</strong> {{mustLogin}}
+			  {{emailMessage}}
 			</div>
 		{{/if}}
 		<div class="row">

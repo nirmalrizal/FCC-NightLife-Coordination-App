@@ -32,13 +32,29 @@ a:hover{
   color: #2E3333;
 }
 
-#search-form{
+#search-form input{
   background-color: #34495e;
   text-align: center;
   color: #fff;
   border: solid #212f3c 2px;
   border-radius: 30px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
 }
+
+#search-form .input-group-btn button{
+  background-color: #34495e;
+  color: #fff;
+  border: solid #212f3c 1px;
+  border-radius: 30px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+#search-form .input-group-btn button:hover{
+  background-color: #5d6d7e;
+}
+
 
 .bars-details{
   background-color: #5d6d7e ;
@@ -73,4 +89,5 @@ a:hover{
 #btn-part{
   padding-left: 0px;
   padding-right: 0px;
+  margin-top: 10px;
 }

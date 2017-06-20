@@ -4,8 +4,8 @@ var yelp = require('yelp-fusion');
 var User = require('../models/user.js');
 var Place = require('../models/places.js');
 
-var clientId = '5vg4arEfVEd-6ZHKgZa1oQ';
-var clientSecret = 'UNj216lADVN32XhsPkArizKZfvzhDtaaYSNLonHDJcFLMxXCICTKRKHSMYED5Nje';
+var clientId = process.env.CLIENT_ID;
+var clientSecret = process.env.CLIENT_SECRET;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -13,15 +13,17 @@ router.get('/', function(req, res, next) {
 	var data = sess.data;
 	var user = sess.user;
 	var loginMessage = req.flash('login');
+	var signupMessage = req.flash('signup');
+	var searchMessage = req.flash('search');
 	Place.find({},function(err,places){
 		if(err){
 			console.log(err)
 		} else {
 			var place = places;
 			if(sess.user){
-				res.render('index', { data, user, place });
+				res.render('index', { data, user, place, searchMessage });
 			} else {
-				res.render('login',{ loginMessage });
+				res.render('login',{ signupMessage, loginMessage });
 			}
 		}
 	});
@@ -36,8 +38,12 @@ router.post('/login',function(req,res){
 			console.log(err);
 			res.redirect('/');
 		} else {
-			if( password == user.password ){
-				sess.user = user;	
+			if(user){
+				if( password == user.password ){
+					sess.user = user;
+				}
+			} else {
+				req.flash('signup','Your account doesnot exist.')
 			}
 			res.redirect('/');
 		};
@@ -45,8 +51,8 @@ router.post('/login',function(req,res){
 });
 
 router.get('/signup',function(req,res){
-	var mustLogin = "You must login to continue";
-	res.render('signup',{ mustLogin });
+	var emailMessage = req.flash('email');
+	res.render('signup',{ emailMessage });
 });
 
 router.post('/signup',function(req,res){
@@ -54,21 +60,29 @@ router.post('/signup',function(req,res){
 	var password = req.body.password;
 	var fullname = req.body.fullname;
 
-	var newUser = new User();
-	newUser.email = email;
-	newUser.password = password;
-	newUser.fullname = fullname;
-	newUser.interestedPlace = [];
-
-	newUser.save(function(err,user){
+	User.findOne({ email: email},function(err,data){
 		if(err){
-			console.log("DB insertion error");
+			console.log(err)
+		} else if(data){
+			req.flash('email','An account on email you are using already exist.');
+			res.redirect('/signup');
 		} else {
-			req.flash('login','You can login now');
-			res.redirect('/');
+			var newUser = new User();
+			newUser.email = email;
+			newUser.password = password;
+			newUser.fullname = fullname;
+			newUser.interestedPlace = [];
+
+			newUser.save(function(err,user){
+				if(err){
+					console.log("DB insertion error");
+				} else {
+					req.flash('login','You can login now');
+					res.redirect('/');
+				}
+			});
 		}
 	});
-	
 });
 
 router.post('/search',function(req, res){
@@ -84,9 +98,13 @@ router.post('/search',function(req, res){
 			var client = yelp.client(data1.jsonBody.access_token);
 
 			client.search(searchRequest).then(function(data2){
-			    sess.data = data2.jsonBody.businesses;
-			    res.redirect('/');
-			});
+				sess.data = data2.jsonBody.businesses;
+			   	res.redirect('/');
+			}).catch(function(err){
+				var mes = loc + " not found."
+				req.flash('search',mes);
+				res.redirect('/');
+			});	
 		})
 		.catch(function(err){
 			  console.log(err);
